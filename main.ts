@@ -16,7 +16,7 @@ import axios from "axios";
 (async () => {
 
     const app = express()
-    const port = 3000
+    const port = 5000
 
     let client;
 
@@ -64,7 +64,7 @@ import axios from "axios";
             client = new issuer.Client({
                 client_id: 'demo-preprod',
                 client_secret: 'mqZ-_75-f2wNsiQTONb7On4aAZ7zc218mrRVk1oufa8',
-                redirect_uris: ['http://localhost:3000/redirect'],
+                redirect_uris: ['http://localhost:5000/redirect'],
                 response_types: ['openid profile'],
 
                 //   id_token_signed_response_alg: "RS256",
@@ -84,12 +84,12 @@ import axios from "axios";
             //    const code_challenge = generators.codeChallenge(code_verifier);
 
             const x = client.authorizationUrl({
-                scope: 'openid profile',
-               // resource: 'https://preprod.signicat.com/oidc/authorize',
+                scope: 'openid profile mitid',
+                resource: 'https://labs.signicat.com/redirect',
                 response_type: 'code',
                 state: generators.state(),
                 nonce: generators.nonce(),
-                acr_values: 'urn:signicat:oidc:method:nbid',
+                acr_values: 'urn:signicat:oidc:method:mitid',
 
                 //   code_challenge_method: 'S256',
             });

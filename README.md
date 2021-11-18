@@ -4,8 +4,7 @@
 
 start
 
-- `tsc`
-- `node .`
+- `npm run start`
 
 `ctrl + c` to exit
 

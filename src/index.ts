@@ -4,6 +4,17 @@ import cookieParser from "cookie-parser";
 
 import * as authHelpers from "./auth";
 
+
+/*
+Nemid - https://docs.zignsec.com/faq/how-to-test-nemid-dk-2/
+THORFIN702-asasas12-0508300389.jpg
+
+MitID:
+u: Hannah9109
+p: poiuytrewq
+
+ */
+
 console.log(`
  USING
  HOST: ${process.env.HOST}

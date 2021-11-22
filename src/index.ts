@@ -1,9 +1,8 @@
 /// <reference path="./declarations.d.ts" />
-import express, {Request, Response} from "express";
-import cookieParser from "cookie-parser";
+import express, { Request, Response } from 'express';
+import cookieParser from 'cookie-parser';
 
-import * as authHelpers from "./auth";
-
+import * as authHelpers from './auth';
 
 /*
 Nemid - https://docs.zignsec.com/faq/how-to-test-nemid-dk-2/
@@ -29,11 +28,10 @@ app.use(cookieParser());
 app.use(authHelpers.initClient);
 app.use(authHelpers.routes());
 
-app.get("/", (req: Request, res: Response) => {
-    res.send(`<a href="/login">Login!</a>`);
+app.get('/', (req: Request, res: Response) => {
+  res.send(`<a href="/login">Login!</a>`);
 });
 
-
 app.listen(process.env.PORT, () => {
-    console.log(`Express started on port ${process.env.PORT}`);
+  console.log(`Express started on port ${process.env.PORT}`);
 });

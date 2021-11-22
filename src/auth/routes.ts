@@ -1,11 +1,11 @@
-import { Router } from "express";
-import { getFullDomain } from "./middleware";
+import { Router } from 'express';
+import { getFullDomain } from './middleware';
 import {
   getAuthStateCookie,
   serializeAuthState,
   setAuthStateCookie,
-} from "./state";
-import { TokenSet, UserinfoResponse } from "openid-client";
+} from './state';
+import { TokenSet, UserinfoResponse } from 'openid-client';
 
 export interface ISession {
   user: UserinfoResponse;
@@ -15,40 +15,40 @@ export interface ISession {
 export default function authRoutesMiddleware(): Router {
   const router = Router();
 
-  router.get("/login", function (req, res, next) {
+  router.get('/login', function (req, res, next) {
     const state = serializeAuthState();
 
     const authUrl = req.app.authClient!.authorizationUrl({
-      scope: "openid email profile mitid",
+      scope: 'openid email profile mitid',
       state,
-      acr_values: "urn:signicat:oidc:method:mitid",
+      acr_values: 'urn:signicat:oidc:method:mitid',
     });
 
-    console.log("state", state);
+    console.log('state', state);
     setAuthStateCookie(res, state);
 
-    console.log("redirecting", authUrl);
+    console.log('redirecting', authUrl);
     res.redirect(authUrl);
   });
 
-  router.get("/redirect", async (req, res, next) => {
+  router.get('/redirect', async (req, res, next) => {
     try {
       const state = getAuthStateCookie(req);
       const client = req.app.authClient;
 
       const params = client!.callbackParams(req);
-      console.log("params", params);
+      console.log('params', params);
       const tokenSet = await client!.callback(
         `${getFullDomain()}/redirect`,
         params,
-        { state }
+        { state },
       );
-      console.log("calling userinfo", tokenSet);
+      console.log('calling userinfo', tokenSet);
       const user = await client!.userinfo(tokenSet);
 
       let logInMethod = `NemID`;
-      if (user.hasOwnProperty("mitid.uuid")) {
-        logInMethod = "MitID";
+      if (user.hasOwnProperty('mitid.uuid')) {
+        logInMethod = 'MitID';
       }
 
       res.status(200).send(`
@@ -63,7 +63,7 @@ export default function authRoutesMiddleware(): Router {
                 Token Set: <pre>${JSON.stringify(tokenSet, null, 2)}</pre>
             `);
     } catch (err) {
-      console.log("Error Post Redirect", err);
+      console.log('Error Post Redirect', err);
       res.status(401).send(`
                 <h3>Unauthorised 401</h3>
                  Error: <pre>${JSON.stringify(err, null, 2)}</pre>

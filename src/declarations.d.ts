@@ -1,7 +1,5 @@
-import {Client, Issuer, TokenSet, UserinfoResponse} from "openid-client";
-import {ISession} from "./auth/routes";
-
-
+import { Client, Issuer, TokenSet, UserinfoResponse } from 'openid-client';
+import { ISession } from './auth/routes';
 
 declare global {
   namespace Express {

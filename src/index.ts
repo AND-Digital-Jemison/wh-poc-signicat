@@ -1,4 +1,4 @@
-/// <reference path="./declarations.d.ts" />
+export * from './declarations';
 import express, { Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 

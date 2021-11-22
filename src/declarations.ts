@@ -1,4 +1,5 @@
-import { Client, Issuer, TokenSet, UserinfoResponse } from 'openid-client';
+/* eslint-disable @typescript-eslint/no-namespace */
+import { Client, Issuer } from 'openid-client';
 import { ISession } from './auth/routes';
 
 declare global {

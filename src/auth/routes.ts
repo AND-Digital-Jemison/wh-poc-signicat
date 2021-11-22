@@ -15,7 +15,7 @@ export interface ISession {
 export default function authRoutesMiddleware(): Router {
   const router = Router();
 
-  router.get('/login', function (req, res, next) {
+  router.get('/login', function (req, res) {
     const state = serializeAuthState();
 
     const authUrl = req.app.authClient!.authorizationUrl({
@@ -31,7 +31,7 @@ export default function authRoutesMiddleware(): Router {
     res.redirect(authUrl);
   });
 
-  router.get('/redirect', async (req, res, next) => {
+  router.get('/redirect', async (req, res) => {
     try {
       const state = getAuthStateCookie(req);
       const client = req.app.authClient;

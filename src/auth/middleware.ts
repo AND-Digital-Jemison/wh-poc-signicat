@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { custom, Issuer } from 'openid-client';
 
 export function getFullDomain(): string {
-  let port = process.env.PUBLISHED_PORT || process.env.PORT;
+  const port = process.env.PUBLISHED_PORT || process.env.PORT;
   return `http://${process.env.HOST}:${port}`;
 }
 

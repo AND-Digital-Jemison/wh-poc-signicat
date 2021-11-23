@@ -29,7 +29,7 @@ app.use(authHelpers.initClient);
 app.use(authHelpers.routes());
 
 app.get('/', (req: Request, res: Response) => {
-  res.send(`<a href="/login">Login!</a>`);
+  res.send(`<div><a href="/login">Login!</a><br><a href="/cpr-check">CPR Check</a></div>`);
 });
 
 app.listen(process.env.PORT, () => {

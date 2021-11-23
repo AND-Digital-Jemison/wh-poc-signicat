@@ -6,6 +6,7 @@ import {
   setAuthStateCookie,
 } from './state';
 import { TokenSet, UserinfoResponse } from 'openid-client';
+import axios from 'axios';
 
 export interface ISession {
   user: UserinfoResponse;
@@ -69,6 +70,41 @@ export default function authRoutesMiddleware(): Router {
                  Error: <pre>${JSON.stringify(err, null, 2)}</pre>
             `);
     }
+  });
+
+  router.get('/cpr-check', async function (req, res) {
+    console.log('IN CPR CHECK', process.env.ROARING_ENDPOINT)
+
+    // axios.request({ 
+    //   headers:{'Content-Type': 'application/json'},
+    //   url: "/token",
+    //   method: "post",
+    //   baseURL: process.env.ROARING_ENDPOINT, 
+    //   data: "grant_type=client_credentials", 
+    //   auth: {
+    //       username: process.env.ROARING_CLIENT_ID,
+    //       password: process.env.ROARING_CLIENT_SECRET
+    //   }
+    // }).then(res => console.log(res)).catch(err => console.log(`err: ${err}`))
+
+    // const access_token = await axios.post(`${process.env.ROARING_AUTH_URL}`, {
+    //   data: { "grant_type":"client_credentials"},
+    //   headers: { "Content-Type": "application/x-www-form-urlencoded",
+    //     "Authorization": "Basic Z29IZmRMd3VVN1I5UGdES3lNeTU1X19hYlI4YTpRSlBYblJJUFB2T1g3SGtTcUhubkNEZlNuczRh"}
+    // }).then(res => console.log(`access_token: ${res}`)).catch(err => console.log(`err: ${err}`))
+
+
+    const resObj = await axios.get(`${process.env.ROARING_ENDPOINT}/dk/person/1.0/0712614382`, {
+      headers: { "Authorization" : `Bearer ${process.env.ROARING_ACCESS_TOKEN}`, "Accept":"application/json", "Content-Type": "application/json"}
+    }).then(response => {
+      console.log(response.data)
+      const data = JSON.stringify(response.data)
+      res.status(200).send(`<div><h3>Success</h3><p>Data:${data}</p></div>`)
+    }).catch(err => {
+      res.status(err.status).send(`<div>Error: ${err.message}`)
+      console.log(`Err: ${err}`)
+    })
+    
   });
 
   return router;

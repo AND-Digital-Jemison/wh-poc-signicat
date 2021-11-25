@@ -18,20 +18,26 @@ export default function authRoutesMiddleware(): Router {
   router.get('/login', function (req, res) {
     const state = serializeAuthState();
 
-    const authUrl = req.app.authClient!.authorizationUrl({
+    const authSignicatUrl = req.app.authClient!.authorizationUrl({
       scope: 'openid email profile mitid',
       state,
       acr_values: 'urn:signicat:oidc:method:mitid',
     });
 
+    const authCriiptoUrl = req.app.authClient!.authorizationUrl({
+      scope: 'openid email profile mitid',
+      state,
+      acr_values: 'urn:grn:authn:dk:mitid:substantial'
+    });
+
     console.log('state', state);
     setAuthStateCookie(res, state);
 
-    console.log('redirecting', authUrl);
-    res.redirect(authUrl);
+    console.log('redirecting', authCriiptoUrl);
+    res.redirect(authCriiptoUrl);
   });
 
-  router.get('/redirect', async (req, res) => {
+  router.get('/redirect', async (req, res) => {    
     try {
       const state = getAuthStateCookie(req);
       const client = req.app.authClient;
@@ -47,7 +53,7 @@ export default function authRoutesMiddleware(): Router {
       const user = await client!.userinfo(tokenSet);
 
       let logInMethod = `NemID`;
-      if (user.hasOwnProperty('mitid.uuid')) {
+      if (user.hasOwnProperty('mitid.uuid') || user.hasOwnProperty('uuid')) {
         logInMethod = 'MitID';
       }
 

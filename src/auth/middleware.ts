@@ -15,14 +15,24 @@ export async function initClient(
     return next();
   }
 
-  const issuer = await Issuer.discover(process.env.OPEN_ID_CONFIG_URL);
+  // const issuer = await Issuer.discover(process.env.OPEN_ID_CONFIG_URL);
+  // console.log('OpendId issuer created');
+  // const client = new issuer.Client({
+  //   client_id: process.env.OAUTH_CLIENT_ID!,
+  //   client_secret: process.env.OAUTH_CLIENT_SECRET!,
+  //   redirect_uris: [`${getFullDomain()}/redirect`],
+  //   response_types: ['code'],
+  // });
+
+  const issuer = await Issuer.discover('https://qwerty-test.criipto.id');
   console.log('OpendId issuer created');
   const client = new issuer.Client({
-    client_id: process.env.OAUTH_CLIENT_ID!,
-    client_secret: process.env.OAUTH_CLIENT_SECRET!,
+    client_id: 'urn:application:example',
+    client_secret: 'rSdzkLJZGIOxVaAXsoRPsQwmpMdVv+9F8kdGTSZNduA=',
     redirect_uris: [`${getFullDomain()}/redirect`],
     response_types: ['code'],
   });
+
   client[custom.clock_tolerance] = 3;
 
   req.app.authIssuer = issuer;

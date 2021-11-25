@@ -35,11 +35,17 @@ app.get('/', (req: Request, res: Response) => {
     <br>
     <p>CPR Check</p>
     <form action="/cpr-check">
+      <label for="inputFirstName">First Name</label><br>
+      <input type="text" id="inputFirstName" name="inputFirstName"><br>
+      <label for="inputLastName">Last Name</label><br>
+      <input type="text" id="inputLastName" name="inputLastName"><br>
       <label for="cprno">CPR no:</label><br>
       <input type="text" id="cprno" name="cprno"><br>
-      <label for="address">Address:</label><br>
-      <input type="text" id="address" name="address"><br><br>
-      <input type="submit" value="Submit">
+      <label for="inputAddress">Address:</label><br>
+      <input type="text" id="inputAddress" name="inputAddress"><br><br>
+      <label for="inputZipCode">ZIP Code:</label><br>
+      <input type="text" id="inputZipCode" name="inputZipCode"><br>
+      <input type="submit" value="Submit"> 
     </form>   
   </div>`);
 });

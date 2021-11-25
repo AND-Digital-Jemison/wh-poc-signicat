@@ -73,22 +73,55 @@ export default function authRoutesMiddleware(): Router {
   });
 
   router.get('/cpr-check', async function (req, res) {
-    console.log('IN CPR CHECK', process.env.ROARING_ENDPOINT)
-    const { cprno, address } = req.query
-    console.log(`cprno: ${cprno}, address: ${address}`)
-    
+    console.log('IN CPR CHECK', process.env.ROARING_ENDPOINT);
+    const { cprno, inputAddress, inputZipCode, inputFirstName, inputLastName } =
+      req.query;
+    console.log(`cprno: ${cprno}, address: ${inputAddress}`);
+
     // example cprno 0712614382
-    await axios.get(`${process.env.ROARING_ENDPOINT}/dk/person/1.0/${cprno}`, {
-      headers: { "Authorization" : `Bearer ${process.env.ROARING_ACCESS_TOKEN}`, "Accept":"application/json", "Content-Type": "application/json"}
-    }).then(response => {
-      console.log(response.data)
-      const data = JSON.stringify(response.data)
-      res.status(200).send(`<div><h3>Success</h3><p>Data:${data}</p></div>`)
-    }).catch(err => {
-      res.status(err.status).send(`<div>Error: ${err.message}`)
-      console.log(`Err: ${err}`)
-    })
-    
+    await axios
+      .get(`${process.env.ROARING_ENDPOINT}/dk/person/1.0/${cprno}`, {
+        headers: {
+          Authorization: `Bearer ${process.env.ROARING_ACCESS_TOKEN}`,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        const { address, name, personalNumber } = response.data.person[0];
+        const { firstName, lastName } = name;
+        const fullAddress = address.nationalRegistrationAddress.address;
+        const { zipCode } = address.nationalRegistrationAddress;
+
+        console.log(
+          `Address: ${fullAddress} / Zip Code: ${zipCode} / First Name: ${firstName} / Last Name: ${lastName} / personalNumber: ${personalNumber}`,
+        );
+
+        let result = `<div><h3>Failed to match data fields</h3></div>`;
+        if (
+          cprno == personalNumber &&
+          inputZipCode == zipCode &&
+          inputFirstName == firstName &&
+          inputLastName == lastName
+        ) {
+          result = `<div>
+                      <h3>Success CPR Match</h3>
+                      <ul>
+                        <li>First Name: ${firstName}</li>
+                        <li>Last Name: ${lastName}</li>
+                        <li>CPR: ${personalNumber}</li>
+                        <li>ZIP Code: ${zipCode}</li>
+                      </ul>
+                    </div>`;
+        }
+
+        res.status(200).send(result);
+      })
+      .catch((err) => {
+        res.status(400).send(`<div>Error: ${err}`);
+        console.log(`Err: ${err}`);
+      });
   });
 
   return router;

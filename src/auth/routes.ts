@@ -74,27 +74,11 @@ export default function authRoutesMiddleware(): Router {
 
   router.get('/cpr-check', async function (req, res) {
     console.log('IN CPR CHECK', process.env.ROARING_ENDPOINT)
-
-    // axios.request({ 
-    //   headers:{'Content-Type': 'application/json'},
-    //   url: "/token",
-    //   method: "post",
-    //   baseURL: process.env.ROARING_ENDPOINT, 
-    //   data: "grant_type=client_credentials", 
-    //   auth: {
-    //       username: process.env.ROARING_CLIENT_ID,
-    //       password: process.env.ROARING_CLIENT_SECRET
-    //   }
-    // }).then(res => console.log(res)).catch(err => console.log(`err: ${err}`))
-
-    // const access_token = await axios.post(`${process.env.ROARING_AUTH_URL}`, {
-    //   data: { "grant_type":"client_credentials"},
-    //   headers: { "Content-Type": "application/x-www-form-urlencoded",
-    //     "Authorization": "Basic Z29IZmRMd3VVN1I5UGdES3lNeTU1X19hYlI4YTpRSlBYblJJUFB2T1g3SGtTcUhubkNEZlNuczRh"}
-    // }).then(res => console.log(`access_token: ${res}`)).catch(err => console.log(`err: ${err}`))
-
-
-    const resObj = await axios.get(`${process.env.ROARING_ENDPOINT}/dk/person/1.0/0712614382`, {
+    const { cprno, address } = req.query
+    console.log(`cprno: ${cprno}, address: ${address}`)
+    
+    // example cprno 0712614382
+    await axios.get(`${process.env.ROARING_ENDPOINT}/dk/person/1.0/${cprno}`, {
       headers: { "Authorization" : `Bearer ${process.env.ROARING_ACCESS_TOKEN}`, "Accept":"application/json", "Content-Type": "application/json"}
     }).then(response => {
       console.log(response.data)

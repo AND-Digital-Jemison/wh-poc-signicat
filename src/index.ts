@@ -29,7 +29,19 @@ app.use(authHelpers.initClient);
 app.use(authHelpers.routes());
 
 app.get('/', (req: Request, res: Response) => {
-  res.send(`<div><a href="/login">Login!</a><br><a href="/cpr-check">CPR Check</a></div>`);
+  res.send(`
+  <div>
+    <a href="/login">Login!</a>
+    <br>
+    <p>CPR Check</p>
+    <form action="/cpr-check">
+      <label for="cprno">CPR no:</label><br>
+      <input type="text" id="cprno" name="cprno"><br>
+      <label for="address">Address:</label><br>
+      <input type="text" id="address" name="address"><br><br>
+      <input type="submit" value="Submit">
+    </form>   
+  </div>`);
 });
 
 app.listen(process.env.PORT, () => {

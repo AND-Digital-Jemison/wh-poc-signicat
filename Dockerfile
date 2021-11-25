@@ -8,5 +8,6 @@ RUN npm install
 
 COPY . .
 
+#should match the PORT in .env
 EXPOSE 5000
 CMD [ "npm", "start" ]

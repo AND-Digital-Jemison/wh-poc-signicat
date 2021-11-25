@@ -7,6 +7,8 @@ import {
 } from './state';
 import { TokenSet, UserinfoResponse } from 'openid-client';
 import axios from 'axios';
+import oauth from 'axios-oauth-client';
+
 
 export interface ISession {
   user: UserinfoResponse;
@@ -73,22 +75,34 @@ export default function authRoutesMiddleware(): Router {
   });
 
   router.get('/cpr-check', async function (req, res) {
-    console.log('IN CPR CHECK', process.env.ROARING_ENDPOINT);
+    console.log('In CPR Check', process.env.ROARING_ENDPOINT);
+
+    // authenticate
+    const getClientCredentials = oauth.client(axios.create(), {
+      url: process.env.ROARING_AUTH_URL,
+      grant_type: 'client_credentials',
+      client_id: process.env.ROARING_CLIENT_ID,
+      client_secret: process.env.ROARING_CLIENT_SECRET,
+      scope: 'baz'
+    });
+
+    const auth = await getClientCredentials();
+    if (!auth) return res.status(401).send('Could not authenticate with roaring.io')
+
     const { cprno, inputAddress, inputZipCode, inputFirstName, inputLastName } =
       req.query;
-    console.log(`cprno: ${cprno}, address: ${inputAddress}`);
+    if (!cprno) return res.status(400).send(`<p><b>BAD REQUEST</b> Missing query parameter: CPR number</p>`)
 
     // example cprno 0712614382
     await axios
       .get(`${process.env.ROARING_ENDPOINT}/dk/person/1.0/${cprno}`, {
         headers: {
-          Authorization: `Bearer ${process.env.ROARING_ACCESS_TOKEN}`,
+          Authorization: `${auth.token_type} ${auth.access_token}`,
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
       })
       .then((response) => {
-        console.log(JSON.stringify(response.data));
         const { address, name, personalNumber } = response.data.person[0];
         const { firstName, lastName } = name;
         const fullAddress = address.nationalRegistrationAddress.address;
@@ -116,10 +130,10 @@ export default function authRoutesMiddleware(): Router {
                     </div>`;
         }
 
-        res.status(200).send(result);
+        return res.status(200).send(result);
       })
       .catch((err) => {
-        res.status(400).send(`<div>Error: ${err}`);
+        return res.status(400).send(`<div>Error: ${err}`);
         console.log(`Err: ${err}`);
       });
   });

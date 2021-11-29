@@ -3,6 +3,7 @@ import express, { Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 
 import * as authHelpers from './auth';
+import { LoginRoutes } from './auth/login-routes';
 
 /*
 Nemid - https://docs.zignsec.com/faq/how-to-test-nemid-dk-2/
@@ -18,8 +19,6 @@ console.log(`
  USING
  HOST: ${process.env.HOST}
  PORT: ${process.env.PORT}
- OAUTH_CLIENT_ID: ${process.env.OAUTH_CLIENT_ID}
- OAUTH_CLIENT_secret: ${process.env.OAUTH_CLIENT_SECRET}
 `);
 
 const app = express();
@@ -29,7 +28,11 @@ app.use(authHelpers.initClient);
 app.use(authHelpers.routes());
 
 app.get('/', (req: Request, res: Response) => {
-  res.send(`<a href="/login">Login!</a>`);
+  res.send(`
+    <a href="${LoginRoutes.Signicat}">Login (Signicat)</a>
+    <br />
+    <a href="${LoginRoutes.Criipto}">Login (Criipto)</a>
+  `);
 });
 
 app.listen(process.env.PORT, () => {

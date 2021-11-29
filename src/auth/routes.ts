@@ -6,6 +6,7 @@ import {
   setAuthStateCookie,
 } from './state';
 import { TokenSet, UserinfoResponse } from 'openid-client';
+import { LoginRoutes } from './login-routes';
 
 export interface ISession {
   user: UserinfoResponse;
@@ -15,16 +16,26 @@ export interface ISession {
 export default function authRoutesMiddleware(): Router {
   const router = Router();
 
-  router.get('/login', function (req, res) {
+  router.get(LoginRoutes.Signicat, function (req, res) {
     const state = serializeAuthState();
 
-    const authSignicatUrl = req.app.authClient!.authorizationUrl({
+    const authSignicatUrl = req.app.signicatClient!.authorizationUrl({
       scope: 'openid email profile mitid',
       state,
       acr_values: 'urn:signicat:oidc:method:mitid',
     });
 
-    const authCriiptoUrl = req.app.authClient!.authorizationUrl({
+    console.log('state', state);
+    setAuthStateCookie(res, state);
+
+    console.log('redirecting', authSignicatUrl);
+    res.redirect(authSignicatUrl);
+  });
+
+  router.get(LoginRoutes.Criipto, function (req, res) {
+    const state = serializeAuthState();
+
+    const authCriiptoUrl = req.app.cripptoClient!.authorizationUrl({
       scope: 'openid email profile mitid',
       state,
       acr_values: 'urn:grn:authn:dk:mitid:substantial'
@@ -40,7 +51,7 @@ export default function authRoutesMiddleware(): Router {
   router.get('/redirect', async (req, res) => {    
     try {
       const state = getAuthStateCookie(req);
-      const client = req.app.authClient;
+      const client = req.app.signicatClient;
 
       const params = client!.callbackParams(req);
       console.log('params', params);

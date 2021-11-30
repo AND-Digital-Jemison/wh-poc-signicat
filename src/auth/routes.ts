@@ -48,6 +48,21 @@ export default function authRoutesMiddleware(): Router {
     res.redirect(authCriiptoUrl);
   });
 
+  router.get(LoginRoutes.Signaturgruppen, function (req, res) {
+    const state = serializeAuthState();
+
+    const authSignaturgruppenUrl = req.app.signaturgruppenClient!.authorizationUrl({
+      state,
+      acr_values: 'urn:signicat:oidc:method:mitid',
+    });
+
+    console.log('state', state);
+    setAuthStateCookie(res, state);
+
+    console.log('redirecting', authSignaturgruppenUrl);
+    res.redirect(authSignaturgruppenUrl);
+  });
+
   router.get('/redirect', async (req, res) => {    
     try {
       const state = getAuthStateCookie(req);

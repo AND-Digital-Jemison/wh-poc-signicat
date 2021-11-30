@@ -32,6 +32,8 @@ app.get('/', (req: Request, res: Response) => {
     <a href="${LoginRoutes.Signicat}">Login (Signicat)</a>
     <br />
     <a href="${LoginRoutes.Criipto}">Login (Criipto)</a>
+    <br />
+    <a href="${LoginRoutes.Signaturgruppen}">Login (Signaturgruppen)</a>
   `);
 });
 

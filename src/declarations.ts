@@ -8,6 +8,7 @@ declare global {
       authIssuer?: Issuer;
       signicatClient?: Client;
       cripptoClient?: Client;
+      signaturgruppenClient?: Client;
     }
 
     export interface Request {

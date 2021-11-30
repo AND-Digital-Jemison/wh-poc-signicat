@@ -17,7 +17,6 @@ export async function initClient(
   }
 
   let issuer: Issuer<BaseClient>;
-  let client: BaseClient;
 
   issuer = await Issuer.discover(process.env.OPEN_ID_SIGNICAT_CONFIG_URL);
   console.log('OpendId issuer created');
@@ -28,21 +27,24 @@ export async function initClient(
     response_types: ['code'],
   });
 
-  client[custom.clock_tolerance] = 3;
-  req.app.signicatClient = client;
-
   issuer = await Issuer.discover(process.env.OPEN_ID_CRIIPTO_CONFIG_URL);
   console.log('OpendId issuer created');
-  client = new issuer.Client({
+  req.app.cripptoClient = new issuer.Client({
     client_id: process.env.OAUTH_CRIIPTO_CLIENT_ID!,
     client_secret: process.env.OAUTH_CRIIPTO_CLIENT_SECRET!,
     redirect_uris: [`${getFullDomain()}/redirect`],
     response_types: ['code'],
   });
 
-  req.app.cripptoClient = client;
-
-  client[custom.clock_tolerance] = 3;
+  issuer = await Issuer.discover(process.env.OPEN_ID_SIGNATURGRUPPEN_CONFIG_URL);
+  console.log('OpendId issuer created');
+  req.app.signaturgruppenClient = new issuer.Client({
+    client_id: process.env.OAUTH_SIGNATURGRUPPEN_CLIENT_ID,
+    client_secret: process.env.OAUTH_SIGNATURGRUPPEN_CLIENT_SECRET,
+    scope: 'openid mitid nemid userinfo_token',
+    redirect_uri: [`${getFullDomain()}/redirect`],
+    response_type: ['code'],
+  });
 
   next();
 }

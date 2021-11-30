@@ -79,7 +79,7 @@ export default function authRoutesMiddleware(): Router {
       const user = await client!.userinfo(tokenSet);
 
       let logInMethod = `NemID`;
-      if (user.hasOwnProperty('mitid.uuid') || user.hasOwnProperty('uuid')) {
+      if (user.hasOwnProperty('mitid.uuid' || 'uuid')) {
         logInMethod = 'MitID';
       }
 

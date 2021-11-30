@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import { BaseClient, custom, Issuer } from 'openid-client';
-import { LoginRoutes } from './login-routes';
 
 export function getFullDomain(): string {
   const port = process.env.PUBLISHED_PORT || process.env.PORT;

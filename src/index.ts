@@ -27,13 +27,12 @@ const app = express();
 app.use(cookieParser());
 app.use(authHelpers.initClient);
 app.use(authHelpers.routes());
-
+app.set('json spaces', 2)
 app.get('/', (req: Request, res: Response) => {
   res.send(`
   <div>
     <a href="/login">Login!</a>
-    <br>
-    <p>CPR Check</p>
+    <h3>CPR Check</h3>
     <form action="/cpr-check">
       <label for="cprno">CPR no:</label><br>
       <input type="text" id="cprno" name="cprno"><br>

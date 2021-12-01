@@ -6,7 +6,9 @@ declare global {
   namespace Express {
     export interface Application {
       authIssuer?: Issuer;
-      authClient?: Client;
+      signicatClient?: Client;
+      cripptoClient?: Client;
+      signaturgruppenClient?: Client;
     }
 
     export interface Request {

@@ -6,6 +6,9 @@ import {
   setAuthStateCookie,
 } from './state';
 import { TokenSet, UserinfoResponse } from 'openid-client';
+import axios from 'axios';
+import oauth from 'axios-oauth-client';
+import { LoginRoutes } from './login-routes';
 
 export interface ISession {
   user: UserinfoResponse;
@@ -15,26 +18,57 @@ export interface ISession {
 export default function authRoutesMiddleware(): Router {
   const router = Router();
 
-  router.get('/login', function (req, res) {
+  router.get(LoginRoutes.Signicat, function (req, res) {
     const state = serializeAuthState();
 
-    const authUrl = req.app.authClient!.authorizationUrl({
-      scope: "openid profile email mitid signicat.national_id",
+    const authSignicatUrl = req.app.signicatClient!.authorizationUrl({
+      scope: 'openid profile email mitid signicat.national_id',
       state,
-      acr_values: 'urn:signicat:oidc:method:mitid-cpr urn:signicat:oidc:method:nemid'
+      acr_values: 'urn:signicat:oidc:method:mitid-cpr urn:signicat:oidc:method:nemid',
     });
 
     console.log('state', state);
     setAuthStateCookie(res, state);
 
-    console.log('redirecting', authUrl);
-    res.redirect(authUrl);
+    console.log('redirecting', authSignicatUrl);
+    res.redirect(authSignicatUrl);
+  });
+
+  router.get(LoginRoutes.Criipto, function (req, res) {
+    const state = serializeAuthState();
+
+    const authCriiptoUrl = req.app.cripptoClient!.authorizationUrl({
+      scope: 'openid email profile mitid',
+      state,
+      acr_values: 'urn:grn:authn:dk:mitid:substantial'
+    });
+
+    console.log('state', state);
+    setAuthStateCookie(res, state);
+
+    console.log('redirecting', authCriiptoUrl);
+    res.redirect(authCriiptoUrl);
+  });
+
+  router.get(LoginRoutes.Signaturgruppen, function (req, res) {
+    const state = serializeAuthState();
+
+    const authSignaturgruppenUrl = req.app.signaturgruppenClient!.authorizationUrl({
+      state,
+      acr_values: 'urn:signicat:oidc:method:mitid',
+    });
+
+    console.log('state', state);
+    setAuthStateCookie(res, state);
+
+    console.log('redirecting', authSignaturgruppenUrl);
+    res.redirect(authSignaturgruppenUrl);
   });
 
   router.get('/redirect', async (req, res) => {
     try {
       const state = getAuthStateCookie(req);
-      const client = req.app.authClient;
+      const client = req.app.signicatClient;
 
       const params = client!.callbackParams(req);
       console.log('params', params);
@@ -47,7 +81,7 @@ export default function authRoutesMiddleware(): Router {
       const user = await client!.userinfo(tokenSet);
 
       let logInMethod = `NemID`;
-      if (user.hasOwnProperty('mitid.uuid')) {
+      if (user.hasOwnProperty('mitid.uuid' || 'uuid')) {
         logInMethod = 'MitID';
       }
 
@@ -69,6 +103,41 @@ export default function authRoutesMiddleware(): Router {
                  Error: <pre>${JSON.stringify(err, null, 2)}</pre>
             `);
     }
+  });
+
+  router.get('/cpr-check', async function (req, res) {
+    console.log('In CPR Check', process.env.ROARING_ENDPOINT);
+
+    // authenticate
+    const getClientCredentials = oauth.client(axios.create(), {
+      url: process.env.ROARING_AUTH_URL,
+      grant_type: 'client_credentials',
+      client_id: process.env.ROARING_CLIENT_ID,
+      client_secret: process.env.ROARING_CLIENT_SECRET,
+      scope: 'baz'
+    });
+
+    const auth = await getClientCredentials();
+    if (!auth) return res.status(401).send('Could not authenticate with roaring.io')
+
+    const { cprno } =  req.query;
+    if (!cprno) return res.status(400).send(`<p><b>BAD REQUEST</b> Missing query parameter: CPR number</p>`)
+
+    // example cprno 0712614382
+    await axios
+      .get(`${process.env.ROARING_ENDPOINT}/dk/person/1.0/${cprno}`, {
+        headers: {
+          Authorization: `${auth.token_type} ${auth.access_token}`,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        return res.status(200).send(response.data.person[0]);
+      })
+      .catch((err) => {
+        return res.status(400).send(`<div>Error: ${err}`);
+      });
   });
 
   return router;

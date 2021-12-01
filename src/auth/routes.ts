@@ -21,7 +21,7 @@ export default function authRoutesMiddleware(): Router {
     const authUrl = req.app.authClient!.authorizationUrl({
       scope: "openid profile email mitid signicat.national_id",
       state,
-      acr_values: 'urn:signicat:oidc:method:mitid-cpr'
+      acr_values: 'urn:signicat:oidc:method:mitid-cpr urn:signicat:oidc:method:nemid'
     });
 
     console.log('state', state);

@@ -3,6 +3,7 @@ import express, { Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 
 import * as authHelpers from './auth';
+import { LoginRoutes } from './auth/login-routes';
 
 /*
 Nemid - https://docs.zignsec.com/faq/how-to-test-nemid-dk-2/
@@ -18,8 +19,6 @@ console.log(`
  USING
  HOST: ${process.env.HOST}
  PORT: ${process.env.PORT}
- OAUTH_CLIENT_ID: ${process.env.OAUTH_CLIENT_ID}
- OAUTH_CLIENT_secret: ${process.env.OAUTH_CLIENT_SECRET}
 `);
 
 const app = express();
@@ -30,15 +29,20 @@ app.use(authHelpers.routes());
 app.set('json spaces', 2)
 app.get('/', (req: Request, res: Response) => {
   res.send(`
-  <div>
-    <a href="/login">Login!</a>
-    <h3>CPR Check</h3>
-    <form action="/cpr-check">
-      <label for="cprno">CPR no:</label><br>
-      <input type="text" id="cprno" name="cprno"><br>
-      <input type="submit" value="Submit"> 
-    </form>   
-  </div>`);
+    <a href="${LoginRoutes.Signicat}">Login (Signicat)</a>
+    <br />
+    <a href="${LoginRoutes.Criipto}">Login (Criipto)</a>
+    <br />
+    <a href="${LoginRoutes.Signaturgruppen}">Login (Signaturgruppen)</a>
+    <div>
+      <h3>CPR Check</h3>
+      <form action="/cpr-check">
+        <label for="cprno">CPR no:</label><br>
+        <input type="text" id="cprno" name="cprno"><br>
+        <input type="submit" value="Submit"> 
+      </form>   
+    </div>
+  `);
 });
 
 app.listen(process.env.PORT, () => {

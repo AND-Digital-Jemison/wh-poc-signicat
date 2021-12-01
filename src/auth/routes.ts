@@ -8,7 +8,7 @@ import {
 import { TokenSet, UserinfoResponse } from 'openid-client';
 import axios from 'axios';
 import oauth from 'axios-oauth-client';
-
+import { LoginRoutes } from './login-routes';
 
 export interface ISession {
   user: UserinfoResponse;
@@ -18,11 +18,42 @@ export interface ISession {
 export default function authRoutesMiddleware(): Router {
   const router = Router();
 
-  router.get('/login', function (req, res) {
+  router.get(LoginRoutes.Signicat, function (req, res) {
     const state = serializeAuthState();
 
-    const authUrl = req.app.authClient!.authorizationUrl({
+    const authSignicatUrl = req.app.signicatClient!.authorizationUrl({
+      scope: 'openid profile email mitid signicat.national_id',
+      state,
+      acr_values: 'urn:signicat:oidc:method:mitid-cpr urn:signicat:oidc:method:nemid',
+    });
+
+    console.log('state', state);
+    setAuthStateCookie(res, state);
+
+    console.log('redirecting', authSignicatUrl);
+    res.redirect(authSignicatUrl);
+  });
+
+  router.get(LoginRoutes.Criipto, function (req, res) {
+    const state = serializeAuthState();
+
+    const authCriiptoUrl = req.app.cripptoClient!.authorizationUrl({
       scope: 'openid email profile mitid',
+      state,
+      acr_values: 'urn:grn:authn:dk:mitid:substantial'
+    });
+
+    console.log('state', state);
+    setAuthStateCookie(res, state);
+
+    console.log('redirecting', authCriiptoUrl);
+    res.redirect(authCriiptoUrl);
+  });
+
+  router.get(LoginRoutes.Signaturgruppen, function (req, res) {
+    const state = serializeAuthState();
+
+    const authSignaturgruppenUrl = req.app.signaturgruppenClient!.authorizationUrl({
       state,
       acr_values: 'urn:signicat:oidc:method:mitid',
     });
@@ -30,14 +61,14 @@ export default function authRoutesMiddleware(): Router {
     console.log('state', state);
     setAuthStateCookie(res, state);
 
-    console.log('redirecting', authUrl);
-    res.redirect(authUrl);
+    console.log('redirecting', authSignaturgruppenUrl);
+    res.redirect(authSignaturgruppenUrl);
   });
 
   router.get('/redirect', async (req, res) => {
     try {
       const state = getAuthStateCookie(req);
-      const client = req.app.authClient;
+      const client = req.app.signicatClient;
 
       const params = client!.callbackParams(req);
       console.log('params', params);
@@ -50,7 +81,7 @@ export default function authRoutesMiddleware(): Router {
       const user = await client!.userinfo(tokenSet);
 
       let logInMethod = `NemID`;
-      if (user.hasOwnProperty('mitid.uuid')) {
+      if (user.hasOwnProperty('mitid.uuid' || 'uuid')) {
         logInMethod = 'MitID';
       }
 

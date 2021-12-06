@@ -22,7 +22,7 @@ export default function authRoutesMiddleware(): Router {
     const state = serializeAuthState();
 
     const authSignicatUrl = req.app.signicatClient!.authorizationUrl({
-      scope: 'openid profile email mitid signicat.national_id',
+      scope: 'openid profile email',
       state,
       acr_values: 'urn:signicat:oidc:method:mitid-cpr urn:signicat:oidc:method:nemid',
     });

@@ -4,7 +4,7 @@ services:
     container_name: oidc-server-mock
     image: ghcr.io/soluto/oidc-server-mock:latest
     ports:
-      - "4011:80"
+      - '4011:80'
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       SERVER_OPTIONS_INLINE: |
@@ -25,10 +25,10 @@ services:
       API_SCOPES_INLINE: |
         [
           {
-            "Name": "some-app-scope-1"
+            "Name": "mitid"
           },
           {
-            "Name": "some-app-scope-2"
+            "Name": "signicat.national_id"
           }
         ]
       API_RESOURCES_INLINE: |

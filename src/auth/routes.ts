@@ -22,9 +22,10 @@ export default function authRoutesMiddleware(): Router {
     const state = serializeAuthState();
 
     const authSignicatUrl = req.app.signicatClient!.authorizationUrl({
-      scope: 'openid profile email',
+      scope: 'openid profile email mitid signicat.national_id',
       state,
-      acr_values: 'urn:signicat:oidc:method:mitid-cpr urn:signicat:oidc:method:nemid',
+      acr_values:
+        'urn:signicat:oidc:method:mitid-cpr urn:signicat:oidc:method:nemid',
     });
 
     console.log('state', state);
@@ -40,7 +41,7 @@ export default function authRoutesMiddleware(): Router {
     const authCriiptoUrl = req.app.cripptoClient!.authorizationUrl({
       scope: 'openid email profile mitid',
       state,
-      acr_values: 'urn:grn:authn:dk:mitid:substantial'
+      acr_values: 'urn:grn:authn:dk:mitid:substantial',
     });
 
     console.log('state', state);
@@ -53,10 +54,11 @@ export default function authRoutesMiddleware(): Router {
   router.get(LoginRoutes.Signaturgruppen, function (req, res) {
     const state = serializeAuthState();
 
-    const authSignaturgruppenUrl = req.app.signaturgruppenClient!.authorizationUrl({
-      state,
-      acr_values: 'urn:signicat:oidc:method:mitid',
-    });
+    const authSignaturgruppenUrl =
+      req.app.signaturgruppenClient!.authorizationUrl({
+        state,
+        acr_values: 'urn:signicat:oidc:method:mitid',
+      });
 
     console.log('state', state);
     setAuthStateCookie(res, state);
@@ -114,14 +116,18 @@ export default function authRoutesMiddleware(): Router {
       grant_type: 'client_credentials',
       client_id: process.env.ROARING_CLIENT_ID,
       client_secret: process.env.ROARING_CLIENT_SECRET,
-      scope: 'baz'
+      scope: 'baz',
     });
 
     const auth = await getClientCredentials();
-    if (!auth) return res.status(401).send('Could not authenticate with roaring.io')
+    if (!auth)
+      return res.status(401).send('Could not authenticate with roaring.io');
 
-    const { cprno } =  req.query;
-    if (!cprno) return res.status(400).send(`<p><b>BAD REQUEST</b> Missing query parameter: CPR number</p>`)
+    const { cprno } = req.query;
+    if (!cprno)
+      return res
+        .status(400)
+        .send(`<p><b>BAD REQUEST</b> Missing query parameter: CPR number</p>`);
 
     // example cprno 0712614382
     await axios

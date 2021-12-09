@@ -29,7 +29,9 @@ app.use(authHelpers.routes());
 app.set('json spaces', 2)
 app.get('/', (req: Request, res: Response) => {
   res.send(`
-    <a href="${LoginRoutes.Signicat}">Login (Signicat)</a>
+    <a href="${LoginRoutes.Signicat}/mitid">Login (Signicat MitId)</a>
+    <br />
+    <a href="${LoginRoutes.Signicat}/nemid">Login (Signicat NemId)</a>
     <br />
     <a href="${LoginRoutes.Criipto}">Login (Criipto)</a>
     <br />

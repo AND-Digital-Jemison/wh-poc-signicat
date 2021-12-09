@@ -23,8 +23,8 @@ export async function initClient(
   client = new issuer.Client({
     client_id: process.env.OAUTH_SIGNICAT_CLIENT_ID!,
     client_secret: process.env.OAUTH_SIGNICAT_CLIENT_SECRET!,
-    redirect_uris: [`${getFullDomain()}/redirect`],
-    response_types: ['code'],
+    redirect_uris: [process.env.OAUTH_SIGNICAT_REDIRECT!],
+    response_types: ['code']
   });
 
   client[custom.clock_tolerance] = 3;

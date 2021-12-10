@@ -27,12 +27,13 @@ app.use(cookieParser());
 app.use(authHelpers.initClient);
 app.use(authHelpers.routes());
 app.use(authHelpers.swedenRoutes());
+app.use(authHelpers.testRoutes());
 
 
 app.set('json spaces', 2)
 app.get('/', (req: Request, res: Response) => {
   res.send(`
-    <a href="${LoginRoutes.Signicat}/mitid">Login (Signicat MitId)</a>
+    <a href="${LoginRoutes.TestLoginMitID}">Login (Signicat MitId)</a>
     <br />
     <a href="${LoginRoutes.Signicat}/nemid">Login (Signicat NemId)</a>
     <br />

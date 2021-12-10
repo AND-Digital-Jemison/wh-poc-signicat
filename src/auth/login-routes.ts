@@ -4,6 +4,6 @@ export enum LoginRoutes {
     Signaturgruppen = '/login-signaturgruppen',
     BankID = '/login/wh-eu-se',
     SampleDanish = '/login/wh-eu-dk?type=mitid',
-    TestLoginMitID = '/login/wh-eu-dk',
-    TestLoginMitIDRedirect = '/redirect/wh-eu-dk'
+    TestLoginMitID = '/login-mitid',
+    TestLoginMitIDRedirect = '/redirect-mitid'
 }

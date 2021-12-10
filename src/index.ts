@@ -1,9 +1,9 @@
 export * from './declarations';
-import express, { Request, Response } from 'express';
+import express, {Request, Response} from 'express';
 import cookieParser from 'cookie-parser';
 
 import * as authHelpers from './auth';
-import { LoginRoutes } from './auth/login-routes';
+import {LoginRoutes} from './auth/login-routes';
 
 /*
 Nemid - https://docs.zignsec.com/faq/how-to-test-nemid-dk-2/
@@ -26,6 +26,9 @@ const app = express();
 app.use(cookieParser());
 app.use(authHelpers.initClient);
 app.use(authHelpers.routes());
+app.use(authHelpers.swedenRoutes());
+
+
 app.set('json spaces', 2)
 app.get('/', (req: Request, res: Response) => {
   res.send(`
@@ -36,6 +39,9 @@ app.get('/', (req: Request, res: Response) => {
     <a href="${LoginRoutes.Criipto}">Login (Criipto)</a>
     <br />
     <a href="${LoginRoutes.Signaturgruppen}">Login (Signaturgruppen)</a>
+    
+        <hr/> 
+    
     <div>
       <h3>CPR Check</h3>
       <form action="/cpr-check">
@@ -44,9 +50,22 @@ app.get('/', (req: Request, res: Response) => {
         <input type="submit" value="Submit"> 
       </form>   
     </div>
+    
+    <hr/> 
+    <div>
+    <h3>Sweden Bank ID</h3>
+ 
+        19830209-1122
+        147258
+ <div>
+    
+    <a href="${LoginRoutes.BankID}">Login (Bank ID - Signicat)</a>
+</div>
+</div>
+    
   `);
 });
 
 app.listen(process.env.PORT, () => {
-  console.log(`Express started on port ${process.env.PORT}`);
+    console.log(`Express started on port ${process.env.PORT}`);
 });

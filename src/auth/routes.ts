@@ -65,7 +65,8 @@ export default function authRoutesMiddleware(): Router {
     res.redirect(authSignaturgruppenUrl);
   });
 
-  router.get('/redirect', async (req, res) => {
+
+    router.get('/redirect', async (req, res) => {
     try {
       const state = getAuthStateCookie(req);
       const client = req.app.signicatClient;

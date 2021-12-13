@@ -5,7 +5,7 @@ import {
   serializeAuthState,
   setAuthStateCookie,
 } from './state';
-import { TokenSet, UserinfoResponse } from 'openid-client';
+import {TokenSet, UserinfoResponse} from 'openid-client';
 import axios from 'axios';
 import oauth from 'axios-oauth-client';
 import { LoginRoutes } from './login-routes';
@@ -24,7 +24,7 @@ export default function authRoutesMiddleware(): Router {
     const authSignicatUrl = req.app.signicatClient!.authorizationUrl({
       scope: 'openid profile email mitid signicat.national_id',
       state,
-      acr_values: 'urn:signicat:oidc:method:mitid-cpr urn:signicat:oidc:method:nemid'
+      acr_values: 'urn:signicat:oidc:method:mitid-cpr urn:signicat:oidc:method:nemid',
     });
 
     console.log('state', state);

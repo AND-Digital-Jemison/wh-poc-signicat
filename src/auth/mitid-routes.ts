@@ -13,19 +13,19 @@ import { getFullDomain } from ".";
  10103933108	Signicat	Nordmann	Ola	otp	qwer1234
  */
 
-export default function testRoutes(): Router {
+export default function mitidRoutes(): Router {
     const router = Router();
 
-    router.get(LoginRoutes.TestLoginMitID, async function (req, res) {
+    router.get(LoginRoutes.LoginMitID, async function (req, res) {
         let issuer: Issuer<BaseClient>;
         let client: BaseClient;
 
-        issuer = await Issuer.discover(process.env.OPEN_ID_SIGNICAT_CONFIG_URL);
+        issuer = await Issuer.discover(process.env.MITID_CONFIG_URL);
         console.log('OpendId issuer created');
         client = new issuer.Client({
-            client_id: process.env.OAUTH_SIGNICAT_CLIENT_ID,
-            client_secret: process.env.OAUTH_SIGNICAT_CLIENT_SECRET,
-            redirect_uris: [process.env.OAUTH_SIGNICAT_REDIRECT],
+            client_id: process.env.MITID_CLIENT_ID,
+            client_secret: process.env.MITID_CLIENT_SECRET,
+            redirect_uris: [process.env.MITID_REDIRECT],
             response_types: ['code']
         });
 
@@ -45,8 +45,12 @@ export default function testRoutes(): Router {
         console.log('redirecting', authUrl);
         res.redirect(authUrl);
     });
-
-    router.get(LoginRoutes.TestLoginMitIDRedirect, async (req, res) => {
+    // TODO
+    // in the mock service create responses for each incoming request (mit and nem) (in beforeUserInfo)
+    // create routes file for mitid and nemid
+    // how can we force an error from there, without touching the eid service (from the mockserver)
+    // why do we lose userinfo we added in the beforeUserInfo hook when we reload?
+    router.get(LoginRoutes.LoginMitIDRedirect, async (req, res) => {
         try {
           const state = getAuthStateCookie(req);
           const client = req.app.signicatClient;
@@ -54,14 +58,14 @@ export default function testRoutes(): Router {
           const params = client!.callbackParams(req);
           console.log('params', params);
           const tokenSet = await client!.callback(
-            `${getFullDomain()}/redirect-mitid`,
+            process.env.MITID_REDIRECT,
             params,
             { state },
           );
           console.log('calling userinfo', tokenSet);
           const user = await client!.userinfo(tokenSet);
     
-          let logInMethod = `NemID`;
+          let logInMethod = `NemID`; // delete, this is for mitId
           if (user.hasOwnProperty('mitid.uuid' || 'uuid')) {
             logInMethod = 'MitID';
           }

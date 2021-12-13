@@ -54,12 +54,19 @@ app.get('/', (req: Request, res: Response) => {
     <hr/> 
     <div>
     <h3>Sweden Bank ID</h3>
- 
-        19830209-1122
-        147258
+        1. Download SE BankID app: https://play.google.com/store/apps/details?id=com.bankid.bus&hl=en_GB&gl=US
+       <br/> 2. Go to https://demo.bankid.com/, generate code and login
+       <br/> 3. Use personal number (198302091122), check short validity and click issue
+       <br/> 4. popup will open and scan qr code with BankID app
+       <br/> 6. set pin - 147258
+       <br/> 5. account is created for 24hrs
+       <br/> 6. Login:
+        
+        
+        
  <div>
     
-    <a href="${LoginRoutes.BankID}">Login (Bank ID - Signicat)</a>
+    <a href="${process.env.SE_BANKID_LOGIN}">Login (Bank ID - Signicat)</a>
 </div>
 </div>
     

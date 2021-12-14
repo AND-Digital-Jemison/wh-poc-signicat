@@ -18,38 +18,6 @@ export interface ISession {
 export default function authRoutesMiddleware(): Router {
   const router = Router();
 
-  // router.get(LoginRoutes.Signicat + '/mitid', function (req, res) {
-  //   const state = serializeAuthState();
-
-  //   const authSignicatUrl = req.app.signicatClient!.authorizationUrl({
-  //     scope: 'openid profile email mitid',
-  //     state,
-  //     acr_values: 'urn:signicat:oidc:method:mitid-cpr',
-  //   });
-
-  //   console.log('state', state);
-  //   setAuthStateCookie(res, state);
-
-  //   console.log('redirecting', authSignicatUrl);
-  //   res.redirect(authSignicatUrl);
-  // });
-
-  // router.get(LoginRoutes.Signicat + '/nemid', function (req, res) {
-  //   const state = serializeAuthState();
-
-  //   const authSignicatUrl = req.app.signicatClient!.authorizationUrl({
-  //     scope: 'openid profile email mitid signicat.national_id',
-  //     state,
-  //     acr_values: 'urn:signicat:oidc:method:nemid',
-  //   });
-
-  //   console.log('state', state);
-  //   setAuthStateCookie(res, state);
-
-  //   console.log('redirecting', authSignicatUrl);
-  //   res.redirect(authSignicatUrl);
-  // });
-
   router.get(LoginRoutes.Criipto, function (req, res) {
     const state = serializeAuthState();
 
@@ -90,7 +58,7 @@ export default function authRoutesMiddleware(): Router {
       const params = client!.callbackParams(req);
       console.log('params', params);
       const tokenSet = await client!.callback(
-        `${getFullDomain()}/redirect`,
+        process.env.PROVIDER_REDIRECT,
         params,
         { state },
       );

@@ -28,7 +28,7 @@ export default function nemidRoutes(): Router {
     client = new issuer.Client({
       client_id: process.env.PROVIDER_CLIENT_ID,
       client_secret: process.env.PROVIDER_CLIENT_SECRET,
-      redirect_uris: [process.env.NEMID_REDIRECT],
+      redirect_uris: [process.env.PROVIDER_REDIRECT],
       response_types: ['code'],
     });
 
@@ -37,7 +37,7 @@ export default function nemidRoutes(): Router {
     const state = serializeAuthState();
 
     const authUrl = client.authorizationUrl({
-      scope: 'openid profile email nemid',
+      scope: 'openid profile email',
       state,
       acr_values: 'urn:signicat:oidc:method:nemid',
     });

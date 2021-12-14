@@ -28,12 +28,15 @@ app.use(authHelpers.initClient);
 app.use(authHelpers.routes());
 app.use(authHelpers.swedenRoutes());
 app.use(authHelpers.mitidRoutes());
+app.use(authHelpers.nemidRoutes());
 
 
 app.set('json spaces', 2)
 app.get('/', (req: Request, res: Response) => {
   res.send(`
-    <a href="${LoginRoutes.LoginMitID}">Login (Signicat MitId)</a>
+    <a href="${LoginRoutes.LoginMitID}">Login (MitId)</a>
+    <br />
+    <a href="${LoginRoutes.LoginNemID}">Login (NemId)</a>
     <br />
     <a href="${LoginRoutes.Criipto}">Login (Criipto)</a>
     <br />

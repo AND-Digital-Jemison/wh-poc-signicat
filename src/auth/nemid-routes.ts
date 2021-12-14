@@ -16,10 +16,10 @@ import { getFullDomain } from '.';
  10103933108	Signicat	Nordmann	Ola	otp	qwer1234
  */
 
-export default function mitidRoutes(): Router {
+export default function nemidRoutes(): Router {
   const router = Router();
 
-  router.get(LoginRoutes.LoginMitID, async function (req, res) {
+  router.get(LoginRoutes.LoginNemID, async function (req, res) {
     let issuer: Issuer<BaseClient>;
     let client: BaseClient;
 
@@ -28,7 +28,7 @@ export default function mitidRoutes(): Router {
     client = new issuer.Client({
       client_id: process.env.PROVIDER_CLIENT_ID,
       client_secret: process.env.PROVIDER_CLIENT_SECRET,
-      redirect_uris: [process.env.MITID_REDIRECT],
+      redirect_uris: [process.env.NEMID_REDIRECT],
       response_types: ['code'],
     });
 
@@ -37,9 +37,9 @@ export default function mitidRoutes(): Router {
     const state = serializeAuthState();
 
     const authUrl = client.authorizationUrl({
-      scope: 'openid profile email mitid ',
+      scope: 'openid profile email nemid',
       state,
-      acr_values: 'urn:signicat:oidc:method:mitid-cpr',
+      acr_values: 'urn:signicat:oidc:method:nemid',
     });
 
     console.log('state', state);
@@ -53,7 +53,7 @@ export default function mitidRoutes(): Router {
   // create routes file for mitid and nemid
   // how can we force an error from there, without touching the eid service (from the mockserver)
   // why do we lose userinfo we added in the beforeUserInfo hook when we reload?
-  router.get(LoginRoutes.LoginMitIDRedirect, async (req, res) => {
+  router.get(LoginRoutes.LoginNemIDRedirect, async (req, res) => {
     try {
       const state = getAuthStateCookie(req);
       const client = req.app.signicatClient;
@@ -61,7 +61,7 @@ export default function mitidRoutes(): Router {
       const params = client!.callbackParams(req);
       console.log('params', params);
       const tokenSet = await client!.callback(
-        process.env.MITID_REDIRECT,
+        process.env.NEMID_REDIRECT,
         params,
         { state },
       );
@@ -71,7 +71,7 @@ export default function mitidRoutes(): Router {
       res.status(200).send(`
                    <h3>Success 200</h3>
                    
-                   <h3>Login Method: MitID</h3>
+                   <h3>Login Method: NemID</h3>
     
                     Claims: <pre>${JSON.stringify(
                       tokenSet.claims(),

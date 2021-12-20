@@ -5,7 +5,7 @@ import {
   serializeAuthState,
   setAuthStateCookie,
 } from './state';
-import { TokenSet, UserinfoResponse } from 'openid-client';
+import {TokenSet, UserinfoResponse} from 'openid-client';
 import axios from 'axios';
 import oauth from 'axios-oauth-client';
 import { LoginRoutes } from './login-routes';

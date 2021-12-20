@@ -22,13 +22,13 @@ export default function mitidRoutes(): Router {
   router.get(LoginRoutes.LoginMitID, async function (req, res) {
     let issuer: Issuer<BaseClient>;
     let client: BaseClient;
-
+    let error = false // for testing purposes
     issuer = await Issuer.discover(process.env.PROVIDER_CONFIG_URL);
     console.log('OpendId issuer created');
     client = new issuer.Client({
       client_id: process.env.PROVIDER_CLIENT_ID,
       client_secret: process.env.PROVIDER_CLIENT_SECRET,
-      redirect_uris: [process.env.MITID_REDIRECT],
+      redirect_uris: [error ? process.env.REDIRECT_ERROR : process.env.MITID_REDIRECT],
       response_types: ['code'],
     });
 
@@ -48,11 +48,7 @@ export default function mitidRoutes(): Router {
     console.log('redirecting', authUrl);
     res.redirect(authUrl);
   });
-  // TODO
-  // in the mock service create responses for each incoming request (mit and nem) (in beforeUserInfo)
-  // create routes file for mitid and nemid
-  // how can we force an error from there, without touching the eid service (from the mockserver)
-  // why do we lose userinfo we added in the beforeUserInfo hook when we reload?
+
   router.get(LoginRoutes.LoginMitIDRedirect, async (req, res) => {
     try {
       const state = getAuthStateCookie(req);
@@ -84,11 +80,7 @@ export default function mitidRoutes(): Router {
                     Token Set: <pre>${JSON.stringify(tokenSet, null, 2)}</pre>
                 `);
     } catch (err) {
-      console.log('Error Post Redirect', err);
-      res.status(401).send(`
-                    <h3>Unauthorised 401</h3>
-                     Error: <pre>${JSON.stringify(err, null, 2)}</pre>
-                `);
+      res.redirect(`${LoginRoutes.ErrorRedirect}?err=${err}`)
     }
   });
 

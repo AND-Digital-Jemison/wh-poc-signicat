@@ -6,5 +6,7 @@ export enum LoginRoutes {
     LoginMitID = '/login-mitid',
     LoginMitIDRedirect = '/redirect-mitid',
     LoginNemID = '/login-nemid',
-    LoginNemIDRedirect = '/redirect-nemid'
+    LoginNemIDRedirect = '/redirect-nemid',
+    ErrorRedirect = '/redirect-error'
+
 }

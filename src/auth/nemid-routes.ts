@@ -84,11 +84,7 @@ export default function nemidRoutes(): Router {
                     Token Set: <pre>${JSON.stringify(tokenSet, null, 2)}</pre>
                 `);
     } catch (err) {
-      console.log('Error Post Redirect', err);
-      res.status(401).send(`
-                    <h3>Unauthorised 401</h3>
-                     Error: <pre>${JSON.stringify(err, null, 2)}</pre>
-                `);
+      res.redirect(`${LoginRoutes.ErrorRedirect}?err=${err}`)
     }
   });
 

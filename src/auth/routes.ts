@@ -89,6 +89,29 @@ export default function authRoutesMiddleware(): Router {
             `);
     }
   });
+  
+  // error route
+  router.get(LoginRoutes.ErrorRedirect, async (req, res) => {
+    try {
+      const state = getAuthStateCookie(req);
+      const client = req.app.signicatClient;
+      const params = client!.callbackParams(req)
+      await client!.callback(
+        process.env.REDIRECT_ERROR,
+        params,
+        { state },
+      );
+
+      console.log('Error message', req.query.err);
+      const err = req.query.err
+      res.status(401).send(`
+                    <h3>Unauthorised 401</h3>
+                     Error: <pre>${JSON.stringify(err, null, 2)}</pre>
+                `);
+    } catch (err) {
+      console.log(err)
+    } 
+  });
 
   router.get('/cpr-check', async function (req, res) {
     console.log('In CPR Check', process.env.ROARING_ENDPOINT);

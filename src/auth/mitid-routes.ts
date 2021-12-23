@@ -22,13 +22,12 @@ export default function mitidRoutes(): Router {
   router.get(LoginRoutes.LoginMitID, async function (req, res) {
     let issuer: Issuer<BaseClient>;
     let client: BaseClient;
-    let error = false // for testing purposes
     issuer = await Issuer.discover(process.env.PROVIDER_CONFIG_URL);
     console.log('OpendId issuer created');
     client = new issuer.Client({
       client_id: process.env.PROVIDER_CLIENT_ID,
       client_secret: process.env.PROVIDER_CLIENT_SECRET,
-      redirect_uris: [error ? process.env.REDIRECT_ERROR : process.env.MITID_REDIRECT],
+      redirect_uris: [process.env.MITID_REDIRECT],
       response_types: ['code'],
     });
 
@@ -55,7 +54,6 @@ export default function mitidRoutes(): Router {
       const client = req.app.signicatClient;
 
       const params = client!.callbackParams(req);
-      console.log('params', params);
       const tokenSet = await client!.callback(
         process.env.MITID_REDIRECT,
         params,
@@ -80,7 +78,10 @@ export default function mitidRoutes(): Router {
                     Token Set: <pre>${JSON.stringify(tokenSet, null, 2)}</pre>
                 `);
     } catch (err) {
-      res.redirect(`${LoginRoutes.ErrorRedirect}?err=${err}`)
+      res.status(401).send(`
+                    <h3>Unauthorised 401</h3>
+                     Error: <pre>${JSON.stringify(err, null, 2)}</pre>
+                `);
     }
   });
 

@@ -22,15 +22,16 @@ export default function authRoutesMiddleware(): Router {
     const state = serializeAuthState();
 
     const authSignicatUrl = req.app.signicatClient!.authorizationUrl({
-      scope: 'openid profile email mitid signicat.national_id',
+      scope: 'openid',
       state,
-      acr_values: 'urn:signicat:oidc:method:mitid-cpr urn:signicat:oidc:method:nemid',
+      identity_provider: 'mitid'
     });
 
     console.log('state', state);
     setAuthStateCookie(res, state);
 
     console.log('redirecting', authSignicatUrl);
+    console.log('redirecting', authSignicatUrl.split('&'));
     res.redirect(authSignicatUrl);
   });
 
@@ -73,11 +74,13 @@ export default function authRoutesMiddleware(): Router {
 
       const params = client!.callbackParams(req);
       console.log('params', params);
+
       const tokenSet = await client!.callback(
-        `${getFullDomain()}/redirect`,
+          process.env.OAUTH_SIGNICAT_REDIRECT,
         params,
         { state },
       );
+
       console.log('calling userinfo', tokenSet);
       const user = await client!.userinfo(tokenSet);
 

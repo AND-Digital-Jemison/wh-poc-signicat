@@ -30,7 +30,7 @@ export async function initClient(
   client[custom.clock_tolerance] = 3;
   req.app.signicatClient = client;
 
-  issuer = await Issuer.discover(process.env.OPEN_ID_CRIIPTO_CONFIG_URL);
+ /* issuer = await Issuer.discover(process.env.OPEN_ID_CRIIPTO_CONFIG_URL);
   console.log('OpendId issuer created');
   client = new issuer.Client({
     client_id: process.env.OAUTH_CRIIPTO_CLIENT_ID!,
@@ -47,13 +47,13 @@ export async function initClient(
   client = new issuer.Client({
     client_id: process.env.OAUTH_SIGNATURGRUPPEN_CLIENT_ID,
     client_secret: process.env.OAUTH_SIGNATURGRUPPEN_CLIENT_SECRET,
-    scope: 'openid mitid nemid userinfo_token',
+    scope: 'openid',
     redirect_uri: [`${getFullDomain()}/redirect`],
     response_type: ['code'],
   });
 
   client[custom.clock_tolerance] = 3;
-  req.app.signaturgruppenClient = client;
+  req.app.signaturgruppenClient = client;*/
 
   next();
 }
